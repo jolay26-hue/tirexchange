@@ -24,10 +24,8 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid var(--line);
 }
 .nav { height: 74px; display: flex; align-items: center; justify-content: space-between; }
-.logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.2rem; }
-.logo picture { display: flex; align-items: center; }
-.logo-mark, .logo-round { width: 46px; height: 46px; border-radius: 50%; object-fit: contain; flex: 0 0 auto; }
-.logo-long { height: 38px; width: auto; max-width: 230px; object-fit: contain; display: block; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; }
+.logo-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--brand); color: #111827; }
 .nav-links { display: flex; align-items: center; gap: 24px; color: var(--muted); }
 .nav-links a:hover { color: var(--brand); }
 .nav-cta { padding: 10px 16px; border: 1px solid var(--brand); border-radius: 999px; color: var(--brand) !important; }
@@ -49,7 +47,7 @@ h1 { font-size: clamp(2.6rem, 6vw, 5.2rem); line-height: .95; margin: 12px 0 22p
 .hero-stats strong { display: block; color: var(--brand); }
 .hero-stats span { color: var(--muted); }
 .hero-card { padding: 42px; box-shadow: 0 24px 80px rgba(0,0,0,.3); }
-.tire-icon { width: 160px; height: 160px; object-fit: contain; animation: spin 12s linear infinite; display: block; margin-bottom: 18px; }
+.tire-icon { font-size: 7rem; color: var(--brand); animation: spin 12s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .hero-card h2 { font-size: 2rem; }
 .hero-card p { color: var(--muted); line-height: 1.7; }
@@ -86,10 +84,3 @@ textarea { resize: vertical; }
   .section { min-height: auto; }
 }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
-
-@media (max-width: 860px) {
-  .logo-long { height: 30px; max-width: 180px; }
-  .logo-mark, .logo-round { width: 38px; height: 38px; }
-  .tire-icon { width: 130px; height: 130px; }
-}
