@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 const Twilio = require('twilio');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const RECIPIENT_EMAIL = 'tirexchangemobile@gmail.com';
+const RECIPIENT_EMAIL = 'tirexchange424@gmail.com';
 const enforceHttps = process.env.ENFORCE_HTTPS === 'true';
 
 if (enforceHttps) {
