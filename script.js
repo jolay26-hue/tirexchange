@@ -1,5 +1,11 @@
 'use strict';
-
+'/*
+Project notes:
+- Simple front-end behaviours: menu toggle, year updater, contact form handling.
+- Created: 2026-05-22
+- Next: connect form to backend; run accessibility audit.
+*/
+'use strict';
 window.addEventListener('DOMContentLoaded', () => {
   const menuToggle = document.querySelector('.menu-toggle');
   const navLinks = document.querySelector('.nav-links');
