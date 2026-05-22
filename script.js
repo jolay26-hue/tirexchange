@@ -1,5 +1,4 @@
-'use strict';
-'/*
+/*
 Project notes:
 - Simple front-end behaviours: menu toggle, year updater, contact form handling.
 - Created: 2026-05-22
@@ -55,9 +54,8 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         if (!res.ok) throw new Error(`Server responded ${res.status}`);
-        const json = await res.json();
-        note.textContent = json.message || `Thanks, ${name}. Your request was submitted.`;
-        form.reset();
+        // on success redirect to a simple success page
+        window.location.href = '/success.html';
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

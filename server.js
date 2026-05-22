@@ -2,31 +2,40 @@
 
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const { body, validationResult } = require('express-validator');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-function normalizeText(value, maxLength) {
-  return String(value || '')
-    .replace(/[\u0000-\u001F\u007F]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, maxLength);
-}
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' }
+});
 
-app.post('/api/contact', (req, res) => {
-  const { name, contact, service } = req.body || {};
-  const n = normalizeText(name, 80);
-  const c = normalizeText(contact, 120);
-  const s = normalizeText(service, 80);
-
-  if (!n || !c || !s) {
-    return res.status(400).json({ error: 'Missing required fields' });
+app.post('/api/contact', contactLimiter, [
+  body('name').trim().isLength({ min: 1, max: 80 }).withMessage('Invalid name'),
+  body('contact').trim().isLength({ min: 1, max: 120 }).withMessage('Invalid contact'),
+  body('service').trim().isLength({ min: 1, max: 80 }).withMessage('Invalid service')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
 
-  console.log('Contact request received:', { name: n, contact: c, service: s, time: new Date().toISOString() });
+  const { name, contact, service } = req.body;
+  const sanitized = {
+    name: String(name).replace(/[\u0000-\u001F\u007F]/g, '').slice(0, 80),
+    contact: String(contact).replace(/[\u0000-\u001F\u007F]/g, '').slice(0, 120),
+    service: String(service).replace(/[\u0000-\u001F\u007F]/g, '').slice(0, 80)
+  };
+
+  console.log('Contact request received:', { ...sanitized, time: new Date().toISOString() });
 
   // TODO: integrate with email, booking, or SMS provider here.
 

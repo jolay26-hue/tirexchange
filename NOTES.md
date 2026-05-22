@@ -21,4 +21,14 @@ npm start
 
 - The backend exposes `POST /api/contact` and returns JSON. Hook your email/booking/SMS integration where noted in `server.js`.
 
+Security and validation notes:
+
+- Rate limiting: `express-rate-limit` is enabled for `POST /api/contact` (15-minute window, 10 requests per IP). Adjust settings in `server.js` to taste.
+- Validation: `express-validator` performs basic length checks on `name`, `contact`, and `service` and returns `400` with errors on invalid input.
+- Further recommendations: add reCAPTCHA, server-side spam scoring, and provider-specific verification before sending emails/SMS.
+
+Client behavior:
+
+- On successful submission the client now redirects to `success.html`.
+
 If you want different notes or a different filename, tell me and I can update this.
