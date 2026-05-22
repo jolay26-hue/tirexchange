@@ -8,6 +8,19 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const RECIPIENT_EMAIL = 'tirexchangemobile@gmail.com';
+const enforceHttps = process.env.ENFORCE_HTTPS === 'true';
+
+if (enforceHttps) {
+  app.set('trust proxy', 1);
+  app.use((req, res, next) => {
+    const forwardedProto = req.headers['x-forwarded-proto'];
+    if (req.secure || forwardedProto === 'https') {
+      res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+      return next();
+    }
+    return res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
+  });
+}
 
 app.use(cors());
 app.use(express.json());

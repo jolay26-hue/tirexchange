@@ -22,6 +22,7 @@ npm start
 - The backend exposes `POST /api/contact` and sends every contact request as email to `tirexchangemobile@gmail.com`.
 
 - If the front-end is deployed as a static site (for example GitHub Pages), `/api/contact` will not work on that host. Set `apiBaseUrl` in `script.js` to the backend URL (for example `https://your-backend.example.com`) and ensure CORS is enabled on the backend.
+- To enforce HTTPS on the backend, set `ENFORCE_HTTPS=true` in your environment and deploy behind a proxy that forwards `x-forwarded-proto`.
 
 SMTP / Gmail settings:
 
