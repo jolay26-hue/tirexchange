@@ -21,6 +21,29 @@ npm start
 
 - The backend exposes `POST /api/contact` and returns JSON. Hook your email/booking/SMS integration where noted in `server.js`.
 
+Provider configuration examples:
+
+- Use SendGrid:
+  - `EMAIL_PROVIDER=sendgrid`
+  - `SENDGRID_API_KEY=your_sendgrid_api_key`
+  - `EMAIL_TO=you@example.com`
+  - `EMAIL_FROM=no-reply@example.com`
+
+- Use SMTP/nodemailer:
+  - `EMAIL_PROVIDER=smtp`
+  - `SMTP_HOST=smtp.example.com`
+  - `SMTP_PORT=587`
+  - `SMTP_USER=your_smtp_user`
+  - `SMTP_PASS=your_smtp_password`
+  - `EMAIL_TO=you@example.com`
+  - `EMAIL_FROM=no-reply@example.com`
+
+- Use Twilio SMS notifications:
+  - `TWILIO_ACCOUNT_SID=your_sid`
+  - `TWILIO_AUTH_TOKEN=your_auth_token`
+  - `TWILIO_FROM_NUMBER=+1234567890`
+  - `NOTIFICATION_PHONE=+19876543210`
+
 Security and validation notes:
 
 - Rate limiting: `express-rate-limit` is enabled for `POST /api/contact` (15-minute window, 10 requests per IP). Adjust settings in `server.js` to taste.
