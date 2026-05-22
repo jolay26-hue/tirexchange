@@ -5,6 +5,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
+const Twilio = require('twilio');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const RECIPIENT_EMAIL = 'tirexchangemobile@gmail.com';
@@ -77,6 +78,26 @@ async function sendEmail({ subject, html, text }) {
   });
 }
 
+async function sendSms({ name, contact, service }) {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_FROM_NUMBER;
+  const to = process.env.OWNER_PHONE;
+
+  if (!sid || !token || !from || !to) {
+    return; // SMS is optional; silently skip if not configured
+  }
+
+  const client = Twilio(sid, token);
+  const body = `New Tire Xchange request from ${name}: ${service} — Contact: ${contact}`;
+
+  return client.messages.create({
+    body,
+    from,
+    to
+  });
+}
+
 app.post(
   '/api/contact',
   contactLimiter,
@@ -113,6 +134,13 @@ app.post(
     try {
       await sendEmail({ subject, html, text });
       console.log('Email sent to', RECIPIENT_EMAIL);
+
+      try {
+        await sendSms(sanitized);
+        console.log('SMS sent to owner at', process.env.OWNER_PHONE);
+      } catch (smsError) {
+        console.warn('SMS send failed (optional):', smsError.message);
+      }
     } catch (error) {
       console.error('Email send error:', error);
       return res.status(500).json({ error: 'Failed to send email notification.' });

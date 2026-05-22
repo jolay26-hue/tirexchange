@@ -12,9 +12,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const note = document.getElementById('formNote');
   const year = document.getElementById('year');
 
-  // If this site is served from GitHub Pages or another static host,
-  // set API_BASE_URL to your backend origin instead of relying on a same-origin /api path.
-  const apiBaseUrl = '';
+  // Backend API URL. Since frontend (GitHub Pages) and backend (Render) are separate,
+  // we need to specify the full backend URL. Update this after deploying to Render.
+  // Example: 'https://tirexchange-backend-xxxx.render.com' (get URL from Render dashboard after deployment)
+  const apiBaseUrl = 'https://tirexchange-backend.onrender.com'; // ← UPDATE THIS with your Render backend URL
   const apiEndpoint = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, '')}/api/contact` : '/api/contact';
 
   if (year) year.textContent = String(new Date().getFullYear());
@@ -43,7 +44,6 @@ window.addEventListener('DOMContentLoaded', () => {
       const name = normalizeText(data.get('name'), 80);
       const contact = normalizeText(data.get('contact'), 120);
       const service = normalizeText(data.get('service'), 80);
-      const message = normalizeText(data.get('message'), 1000);
 
       if (!name || !contact || !service) {
         note.textContent = 'Please complete your name, contact information, and service needed.';
@@ -56,7 +56,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const res = await fetch(apiEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, contact, service, message })
+          body: JSON.stringify({ name, contact, service })
         });
 
         if (!res.ok) throw new Error(`Server responded ${res.status}`);

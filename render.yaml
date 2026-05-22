@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: tirexchange-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 465
+      - key: SMTP_SECURE
+        value: true
+      - key: SMTP_USER
+        fromBuild: false
+      - key: SMTP_PASS
+        fromBuild: false
+      - key: EMAIL_FROM
+        fromBuild: false
+      - key: TWILIO_ACCOUNT_SID
+        fromBuild: false
+      - key: TWILIO_AUTH_TOKEN
+        fromBuild: false
+      - key: TWILIO_FROM_NUMBER
+        fromBuild: false
+      - key: OWNER_PHONE
+        fromBuild: false
+      - key: ENFORCE_HTTPS
+        value: true
