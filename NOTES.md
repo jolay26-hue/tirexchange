@@ -19,32 +19,20 @@ npm install
 npm start
 ```
 
-- The backend exposes `POST /api/contact` and returns JSON. Hook your email/booking/SMS integration where noted in `server.js`.
+- The backend exposes `POST /api/contact` and sends every contact request as email to `tirexchangemobile@gmail.com`.
 
-- If the front-end is deployed as a static site (for example GitHub Pages), `/api/contact` will not work on that host. In that case, set `apiBaseUrl` in `script.js` to the backend URL (for example `https://your-backend.example.com`) and ensure CORS is enabled on the backend.
+- If the front-end is deployed as a static site (for example GitHub Pages), `/api/contact` will not work on that host. Set `apiBaseUrl` in `script.js` to the backend URL (for example `https://your-backend.example.com`) and ensure CORS is enabled on the backend.
 
-Provider configuration examples:
+SMTP / Gmail settings:
 
-- Use SendGrid:
-  - `EMAIL_PROVIDER=sendgrid`
-  - `SENDGRID_API_KEY=your_sendgrid_api_key`
-  - `EMAIL_TO=you@example.com`
-  - `EMAIL_FROM=no-reply@example.com`
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=465`
+- `SMTP_SECURE=true`
+- `SMTP_USER=your-gmail-address@gmail.com`
+- `SMTP_PASS=your-gmail-app-password`
+- `EMAIL_FROM=your-gmail-address@gmail.com`
 
-- Use SMTP/nodemailer:
-  - `EMAIL_PROVIDER=smtp`
-  - `SMTP_HOST=smtp.example.com`
-  - `SMTP_PORT=587`
-  - `SMTP_USER=your_smtp_user`
-  - `SMTP_PASS=your_smtp_password`
-  - `EMAIL_TO=you@example.com`
-  - `EMAIL_FROM=no-reply@example.com`
-
-- Use Twilio SMS notifications:
-  - `TWILIO_ACCOUNT_SID=your_sid`
-  - `TWILIO_AUTH_TOKEN=your_auth_token`
-  - `TWILIO_FROM_NUMBER=+1234567890`
-  - `NOTIFICATION_PHONE=+19876543210`
+If you want, you can also use another SMTP provider instead of Gmail by updating `SMTP_HOST`, `SMTP_PORT`, and `SMTP_SECURE`.
 
 Security and validation notes:
 
@@ -55,5 +43,3 @@ Security and validation notes:
 Client behavior:
 
 - On successful submission the client now redirects to `success.html`.
-
-If you want different notes or a different filename, tell me and I can update this.

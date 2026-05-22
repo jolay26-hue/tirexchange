@@ -43,6 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const name = normalizeText(data.get('name'), 80);
       const contact = normalizeText(data.get('contact'), 120);
       const service = normalizeText(data.get('service'), 80);
+      const message = normalizeText(data.get('message'), 1000);
 
       if (!name || !contact || !service) {
         note.textContent = 'Please complete your name, contact information, and service needed.';
@@ -55,7 +56,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const res = await fetch(apiEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, contact, service })
+          body: JSON.stringify({ name, contact, service, message })
         });
 
         if (!res.ok) throw new Error(`Server responded ${res.status}`);
