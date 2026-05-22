@@ -13,9 +13,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const year = document.getElementById('year');
 
   // Backend API URL. Since frontend (GitHub Pages) and backend (Render) are separate,
-  // we need to specify the full backend URL. Update this after deploying to Render.
-  // Example: 'https://tirexchange-backend-xxxx.render.com' (get URL from Render dashboard after deployment)
-  const apiBaseUrl = 'https://tirexchange-backend.onrender.com'; // ← UPDATE THIS with your Render backend URL
+  // we need to specify the full backend URL.
+  const apiBaseUrl = 'https://tirexchange-backend.onrender.com';
   const apiEndpoint = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, '')}/api/contact` : '/api/contact';
 
   if (year) year.textContent = String(new Date().getFullYear());
