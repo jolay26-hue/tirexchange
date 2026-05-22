@@ -24,9 +24,9 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid var(--line);
 }
 .nav { height: 74px; display: flex; align-items: center; justify-content: space-between; }
-.logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.2rem; }
+.logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 2rem; }
 .logo picture { display: flex; align-items: center; }
-.logo-mark, .logo-round { width: 46px; height: 46px; border-radius: 50%; object-fit: contain; flex: 0 0 auto; }
+.logo-mark, .logo-round { width: 150px; height: 150px; border-radius: 50%; object-fit: contain; flex: 0 0 auto; }
 .logo-long { height: 38px; width: auto; max-width: 230px; object-fit: contain; display: block; }
 .nav-links { display: flex; align-items: center; gap: 24px; color: var(--muted); }
 .nav-links a:hover { color: var(--brand); }
@@ -49,7 +49,7 @@ h1 { font-size: clamp(2.6rem, 6vw, 5.2rem); line-height: .95; margin: 12px 0 22p
 .hero-stats strong { display: block; color: var(--brand); }
 .hero-stats span { color: var(--muted); }
 .hero-card { padding: 42px; box-shadow: 0 24px 80px rgba(0,0,0,.3); }
-.tire-icon { width: 160px; height: 160px; object-fit: contain; animation: spin 12s linear infinite; display: block; margin-bottom: 18px; }
+.tire-icon { width: 200px; height: 200px; object-fit: contain; animation: spin 12s linear infinite; display: block; margin-bottom: 18px; margin-left: 100px;}
 @keyframes spin { to { transform: rotate(360deg); } }
 .hero-card h2 { font-size: 2rem; }
 .hero-card p { color: var(--muted); line-height: 1.7; }
