@@ -12,6 +12,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const note = document.getElementById('formNote');
   const year = document.getElementById('year');
 
+  // If this site is served from GitHub Pages or another static host,
+  // set API_BASE_URL to your backend origin instead of relying on a same-origin /api path.
+  const apiBaseUrl = '';
+  const apiEndpoint = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, '')}/api/contact` : '/api/contact';
+
   if (year) year.textContent = String(new Date().getFullYear());
 
   if (menuToggle && navLinks) {
@@ -47,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
       note.textContent = 'Sending...';
 
       try {
-        const res = await fetch('/api/contact', {
+        const res = await fetch(apiEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, contact, service })

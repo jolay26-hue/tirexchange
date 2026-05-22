@@ -21,6 +21,8 @@ npm start
 
 - The backend exposes `POST /api/contact` and returns JSON. Hook your email/booking/SMS integration where noted in `server.js`.
 
+- If the front-end is deployed as a static site (for example GitHub Pages), `/api/contact` will not work on that host. In that case, set `apiBaseUrl` in `script.js` to the backend URL (for example `https://your-backend.example.com`) and ensure CORS is enabled on the backend.
+
 Provider configuration examples:
 
 - Use SendGrid:
