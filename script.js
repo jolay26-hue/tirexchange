@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (form && note) {
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       const data = new FormData(form);
@@ -45,8 +45,24 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      note.textContent = `Thanks, ${name}. Your request is ready. Please connect this form to your secure email, booking, or SMS backend before going live.`;
-      form.reset();
+      note.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, contact, service })
+        });
+
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const json = await res.json();
+        note.textContent = json.message || `Thanks, ${name}. Your request was submitted.`;
+        form.reset();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        note.textContent = 'Sorry — failed to send your request. Please try again later.';
+      }
     });
   }
 });

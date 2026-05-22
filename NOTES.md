@@ -9,4 +9,16 @@
   - Add server-side validation and spam protection.
   - Run accessibility and cross-browser testing.
 
+Backend skeleton:
+
+- A minimal Node/Express backend skeleton is provided in `server.js`.
+- To run locally:
+
+```bash
+npm install
+npm start
+```
+
+- The backend exposes `POST /api/contact` and returns JSON. Hook your email/booking/SMS integration where noted in `server.js`.
+
 If you want different notes or a different filename, tell me and I can update this.
