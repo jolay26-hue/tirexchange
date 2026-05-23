@@ -93,3 +93,8 @@ textarea { resize: vertical; }
   .logo-mark, .logo-round { width: 38px; height: 38px; }
   .tire-icon { width: 130px; height: 130px; }
 }
+
+.form-note[data-status="success"] { color: #86efac; font-weight: 800; }
+.form-note[data-status="error"] { color: #fca5a5; font-weight: 800; }
+.form-note[data-status="info"] { color: var(--muted); font-weight: 700; }
+button:disabled { opacity: .65; cursor: not-allowed; }

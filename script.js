@@ -1,8 +1,7 @@
 /*
 Project notes:
-- Menu toggle, year updater, and light contact-form validation.
-- The contact form posts directly to FormSubmit so it works on GitHub Pages.
-- Do not add mailto or fetch here; let the browser submit the form normally.
+- Front-end behaviours: menu toggle, year updater, AJAX contact form handling.
+- Contact form uses FormSubmit because GitHub Pages is static and cannot run SMTP/server code.
 */
 'use strict';
 
@@ -30,81 +29,65 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (form && note) {
-    // Protect the recipient address from simple scrapers (encoded)
-    const encodedRecipient = 'dGlyZXhjaGFuZ2U0MjRAZ21haWwuY29t'; // tireexchange424@gmail.com
-    //const encodedRecipient = 'dGlyZXhjaGFuZ2Vtb2JpbGVAZ21haWwuY29t'; // tirexchangemobile@gmail.com
-    const recipient = atob(encodedRecipient);
-    const formSubmitUrl = `https://formsubmit.co/${encodeURIComponent(recipient)}`;
-
-    // Ensure form attributes are set for FormSubmit and to open in new tab
-    form.setAttribute('action', formSubmitUrl);
-    form.setAttribute('method', 'POST');
-    form.setAttribute('target', '_blank');
-
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const data = new FormData(form);
+      const submitButton = form.querySelector('button[type="submit"]');
+      const formData = new FormData(form);
 
-      // Spam trap: real users will not fill this hidden field.
-      if (String(data.get('_honey') || '').trim() !== '') {
-        return; // silently drop
-      }
-
-      const name = normalizeText(data.get('name'), 80);
-      const contact = normalizeText(data.get('Phone or Email'), 120);
-      const service = normalizeText(data.get('Service Needed'), 80);
-      const message = normalizeText(data.get('Message') || '', 1000);
-
-      if (!name || !contact || !service) {
-        note.textContent = 'Please complete your name, contact information, and service needed.';
+      // Honeypot spam protection. Real users will not fill this hidden field.
+      if (String(formData.get('website') || '').trim() !== '') {
         return;
       }
 
-      note.textContent = 'Sending your request...';
-      const submitBtn = form.querySelector('[type="submit"]');
-      if (submitBtn) submitBtn.disabled = true;
+      const name = normalizeText(formData.get('name'), 80);
+      const contact = normalizeText(formData.get('contact'), 120);
+      const service = normalizeText(formData.get('service'), 80);
+      const message = normalizeText(formData.get('message'), 1000);
 
-      // Add/ensure hidden fields for FormSubmit
-      if (!form.querySelector('input[name="_subject"]')) {
-        const s = document.createElement('input'); s.type = 'hidden'; s.name = '_subject'; s.value = `New Tire Xchange Service Request from ${name}`; form.appendChild(s);
-      }
-      if (!form.querySelector('input[name="_next"]')) {
-        const n = document.createElement('input'); n.type = 'hidden'; n.name = '_next'; n.value = 'https://tirexchangemobile.ca/success.html'; form.appendChild(n);
+      if (!name || !contact || !service) {
+        showNote(note, 'Please complete your name, contact information, and service needed.', 'error');
+        return;
       }
 
-      // Prepare payload for fetch attempt so we can detect success
-      const payload = new FormData();
-      payload.append('name', name);
-      payload.append('Phone or Email', contact);
-      payload.append('Service Needed', service);
-      payload.append('Message', message);
-      payload.append('_subject', `New Tire Xchange Service Request from ${name}`);
-      payload.append('_template', 'table');
-      payload.append('_captcha', 'false');
-      payload.append('_next', 'https://tirexchangemobile.ca/success.html');
+      formData.set('name', name);
+      formData.set('contact', contact);
+      formData.set('service', service);
+      formData.set('message', message || 'None');
+      formData.set('_subject', `New Tire Xchange Request - ${service}`);
+      formData.set('_cc', 'tirexchangemobile@gmail.com');
+      formData.set('_captcha', 'false');
+      formData.set('_template', 'table');
+
+      showNote(note, 'Sending your request...', 'info');
+      if (submitButton) submitButton.disabled = true;
 
       try {
-        const res = await fetch(formSubmitUrl, { method: 'POST', mode: 'cors', body: payload });
+        const response = await fetch('https://formsubmit.co/ajax/tireexchange424@gmail.com', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: formData
+        });
 
-        // If fetch succeeds (CORS permitted), open configured success page in new tab and clear form
-        if (res.ok || res.type === 'opaque' || [200,201,202].includes(res.status)) {
-          window.open('https://tirexchangemobile.ca/success.html', '_blank', 'noopener');
-          form.reset();
-          note.textContent = 'Request sent — check your email for confirmation.';
-        } else {
-          // Fallback: submit normally which will open FormSubmit in a new tab
-          form.submit();
-          setTimeout(() => { form.reset(); note.textContent = 'Request sent — check your email.'; }, 1500);
+        let result = {};
+        try {
+          result = await response.json();
+        } catch (_) {
+          result = {};
         }
-      } catch (err) {
-        // Network/CORS error - fallback to normal submit
-        // eslint-disable-next-line no-console
-        console.error('FormSubmit fetch failed, falling back to normal submit', err);
-        form.submit();
-        setTimeout(() => { form.reset(); note.textContent = 'Request sent — check your email.'; }, 1500);
+
+        if (!response.ok) {
+          const reason = result.message || result.error || `FormSubmit returned ${response.status}.`;
+          throw new Error(reason);
+        }
+
+        form.reset();
+        showNote(note, 'Success! Your message was sent. We will contact you shortly.', 'success');
+      } catch (error) {
+        const reason = error && error.message ? error.message : 'Unable to send the message.';
+        showNote(note, `Failed to send message: ${reason}`, 'error');
       } finally {
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitButton) submitButton.disabled = false;
       }
     });
   }
@@ -116,4 +99,9 @@ function normalizeText(value, maxLength) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, maxLength);
+}
+
+function showNote(element, message, type) {
+  element.textContent = message;
+  element.dataset.status = type;
 }
