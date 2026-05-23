@@ -93,50 +93,6 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-if (form && note) {
-  // Clear message when user interacts with form
-  form.addEventListener('focusin', () => {
-    note.textContent = '';
-    note.className = ''; // remove success/error styles if any
-  });
-
-  form.addEventListener('input', () => {
-    note.textContent = '';
-    note.className = '';
-  });
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    note.textContent = 'Sending...';
-
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        note.textContent = '✅ Message sent successfully!';
-        note.className = 'success';
-        form.reset();
-      } else {
-        const data = await response.json();
-        note.textContent = data.error || '❌ Failed to send message.';
-        note.className = 'error';
-      }
-    } catch (error) {
-      note.textContent = '❌ Network error. Please try again.';
-      note.className = 'error';
-    }
-  });
-}
-
 function normalizeText(value, maxLength) {
   return String(value || '')
     .replace(/[\u0000-\u001F\u007F]/g, '')
