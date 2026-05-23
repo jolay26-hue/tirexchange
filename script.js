@@ -1,7 +1,8 @@
 /*
 Project notes:
-- Simple front-end behaviours: menu toggle, year updater, contact form validation.
-- Contact form posts to FormSubmit so it works on GitHub Pages without a backend server.
+- Menu toggle, year updater, and light contact-form validation.
+- The contact form posts directly to FormSubmit so it works on GitHub Pages.
+- Do not add mailto or fetch here; let the browser submit the form normally.
 */
 'use strict';
 
@@ -31,6 +32,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (form && note) {
     form.addEventListener('submit', (event) => {
       const data = new FormData(form);
+
+      // Spam trap: real users will not fill this hidden field.
       if (String(data.get('_honey') || '').trim() !== '') {
         event.preventDefault();
         return;
@@ -47,6 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
 
       note.textContent = 'Sending your request...';
+      // Let the browser submit normally to https://formsubmit.co/...
     });
   }
 });
