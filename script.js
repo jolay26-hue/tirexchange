@@ -12,10 +12,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const note = document.getElementById('formNote');
   const year = document.getElementById('year');
 
-  // Backend API URL. Since frontend (GitHub Pages) and backend (Render) are separate,
-  // we need to specify the full backend URL.
-  const apiBaseUrl = 'https://tirexchange-backend.onrender.com';
-  const apiEndpoint = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, '')}/api/contact` : '/api/contact';
+  // Contact form endpoint (local PHP handler)
+  const apiEndpoint = '/contact.php';
 
   if (year) year.textContent = String(new Date().getFullYear());
 
