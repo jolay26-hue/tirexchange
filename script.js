@@ -29,6 +29,16 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (form && note) {
+    const clearNote = () => {
+      if (note.textContent.trim() !== '') {
+        note.textContent = '';
+        note.removeAttribute('data-status');
+      }
+    };
+
+    form.addEventListener('focusin', clearNote);
+    form.addEventListener('input', clearNote);
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
