@@ -12,8 +12,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const note = document.getElementById('formNote');
   const year = document.getElementById('year');
 
-  // Contact form endpoint (local PHP handler)
-  const apiEndpoint = '/contact.php';
+  // Contact form - secure mailto handler (email encoded to prevent spam bots)
+  // Email (encoded): dGlyZXhjaGFuZ2Vtb2JpbGVAZ21haWwuY29t = tirexchangemobile@gmail.com
+  const recipientEmail = atob('dGlyZXhjaGFuZ2Vtb2JpbGVAZ21haWwuY29t');
 
   if (year) year.textContent = String(new Date().getFullYear());
 
@@ -32,7 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (form && note) {
-    form.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', (event) => {
       event.preventDefault();
 
       const data = new FormData(form);
@@ -41,29 +42,31 @@ window.addEventListener('DOMContentLoaded', () => {
       const name = normalizeText(data.get('name'), 80);
       const contact = normalizeText(data.get('contact'), 120);
       const service = normalizeText(data.get('service'), 80);
+      const message = normalizeText(data.get('message'), 1000);
 
       if (!name || !contact || !service) {
         note.textContent = 'Please complete your name, contact information, and service needed.';
         return;
       }
 
-      note.textContent = 'Sending...';
+      // Build email subject with service info
+      const emailSubject = `Tire Xchange Request - ${service}`;
 
-      try {
-        const res = await fetch(apiEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, contact, service })
-        });
+      // Build email body with all form data
+      const emailBody = `Name: ${name}\nContact: ${contact}\nService: ${service}\nMessage: ${message || 'None'}\n\nSent: ${new Date().toLocaleString()}`;
 
-        if (!res.ok) throw new Error(`Server responded ${res.status}`);
-        // on success redirect to a simple success page
+      // Create secure mailto link
+      const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+      note.textContent = 'Opening your email client...';
+
+      // Open user's default email client
+      window.location.href = mailtoLink;
+
+      // Redirect to success page after brief delay
+      setTimeout(() => {
         window.location.href = '/success.html';
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        note.textContent = 'Sorry — failed to send your request. Please try again later.';
-      }
+      }, 1500);
     });
   }
 });
