@@ -1,20 +1,16 @@
 /*
 Project notes:
-- Simple front-end behaviours: menu toggle, year updater, contact form handling.
-- Created: 2026-05-22
-- Next: connect form to backend; run accessibility audit.
+- Simple front-end behaviours: menu toggle, year updater, contact form validation.
+- Contact form posts to FormSubmit so it works on GitHub Pages without a backend server.
 */
 'use strict';
+
 window.addEventListener('DOMContentLoaded', () => {
   const menuToggle = document.querySelector('.menu-toggle');
   const navLinks = document.querySelector('.nav-links');
   const form = document.getElementById('contactForm');
   const note = document.getElementById('formNote');
   const year = document.getElementById('year');
-
-  // Contact form - secure mailto handler (email encoded to prevent spam bots)
-  // Email (encoded): dGlyZXhjaGFuZ2Vtb2JpbGVAZ21haWwuY29t = tirexchangemobile@gmail.com
-  const recipientEmail = atob('dGlyZXhjaGFuZ2Vtb2JpbGVAZ21haWwuY29t');
 
   if (year) year.textContent = String(new Date().getFullYear());
 
@@ -34,39 +30,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (form && note) {
     form.addEventListener('submit', (event) => {
-      event.preventDefault();
-
       const data = new FormData(form);
-      if (String(data.get('website') || '').trim() !== '') return;
+      if (String(data.get('_honey') || '').trim() !== '') {
+        event.preventDefault();
+        return;
+      }
 
       const name = normalizeText(data.get('name'), 80);
-      const contact = normalizeText(data.get('contact'), 120);
-      const service = normalizeText(data.get('service'), 80);
-      const message = normalizeText(data.get('message'), 1000);
+      const contact = normalizeText(data.get('Phone or Email'), 120);
+      const service = normalizeText(data.get('Service Needed'), 80);
 
       if (!name || !contact || !service) {
+        event.preventDefault();
         note.textContent = 'Please complete your name, contact information, and service needed.';
         return;
       }
 
-      // Build email subject with service info
-      const emailSubject = `Tire Xchange Request - ${service}`;
-
-      // Build email body with all form data
-      const emailBody = `Name: ${name}\nContact: ${contact}\nService: ${service}\nMessage: ${message || 'None'}\n\nSent: ${new Date().toLocaleString()}`;
-
-      // Create secure mailto link
-      const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-      note.textContent = 'Opening your email client...';
-
-      // Open user's default email client
-      window.location.href = mailtoLink;
-
-      // Redirect to success page after brief delay
-      setTimeout(() => {
-        window.location.href = '/success.html';
-      }, 1500);
+      note.textContent = 'Sending your request...';
     });
   }
 });
