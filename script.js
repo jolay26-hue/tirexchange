@@ -31,7 +31,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (form && note) {
     // Protect the recipient address from simple scrapers (encoded)
-    const encodedRecipient = 'dGlyZXhjaGFuZ2U0MjRAZ21haWwuY29t'; // tirexchange424@gmail.com
+    //const encodedRecipient = 'dGlyZXhjaGFuZ2U0MjRAZ21haWwuY29t'; // tireexchange424@gmail.com
+    const encodedRecipient = 'dGlyZXhjaGFuZ2Vtb2JpbGVAZ21haWwuY29t'; // tirexchangemobile@gmail.com
     const recipient = atob(encodedRecipient);
     const formSubmitUrl = `https://formsubmit.co/${encodeURIComponent(recipient)}`;
 
