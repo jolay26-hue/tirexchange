@@ -1,11 +1,15 @@
 <?php
+// For Composer-based installation (requires: composer require sendgrid/sendgrid-php)
+// Uncomment the line below if using Composer:
+// require 'vendor/autoload.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // ===== CONFIGURATION =====
-// SendGrid Email settings - use environment variable for API key (safer)
+// SendGrid Email settings - use environment variable for API key
 $sendgrid_api_key = getenv('SENDGRID_API_KEY');
 if (!$sendgrid_api_key) {
     http_response_code(500);

@@ -1,5 +1,50 @@
 # Configuration Guide
 
+## SendGrid Email Integration
+
+Two methods available:
+
+### Method 1: REST API with CURL (Recommended - Currently Implemented) ✅
+
+**Best for:** Shared hosting, no Composer/dependencies
+- No additional setup needed
+- Works on Infinityfree, GoDaddy, etc.
+- Direct SendGrid API calls
+- Lightweight
+
+**Current Implementation:**
+Your `contact.php` uses this method. Just set the environment variable with your API key.
+
+---
+
+### Method 2: SendGrid PHP Library (Cleaner Code)
+
+**Best for:** Control Panel hosting with Composer support
+
+#### Installation (requires SSH/Composer):
+```bash
+composer require sendgrid/sendgrid-php
+```
+
+#### Usage in contact.php:
+```php
+require 'vendor/autoload.php';
+use SendGrid\Mail\Mail;
+
+$email = new Mail();
+$email->setFrom($senderEmail, "Tire Xchange");
+$email->setSubject($emailSubject);
+$email->addTo($recipientEmail);
+$email->addContent("text/plain", $emailBody);
+$email->setReplyTo($contact);
+
+$sendgrid = new \SendGrid($sendgrid_api_key);
+$response = $sendgrid->send($email);
+$email_sent = ($response->statusCode() == 202);
+```
+
+---
+
 ## SendGrid API Key Setup
 
 The `contact.php` file requires a SendGrid API key to send emails. The key is retrieved from an environment variable for security.
